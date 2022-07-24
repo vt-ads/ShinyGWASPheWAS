@@ -9,15 +9,45 @@ library(reshape2)
 library(ggrepel)
 library(periscope)
 library(shinybusy)
+#setwd("~/Insync/rafael.yassue@usp.br/Google Drive/Ubuntu_RY/PHEGWAS/shiny")
 options(shiny.maxRequestSize=100*1024^2) 
 #setwd(gsub("shiny.R", "",rstudioapi::getActiveDocumentContext()$path))
 # Changes the name of the 
 ui <-shinyUI(fluidPage(# 1
-  titlePanel("Multiple phenotypes Manhattan plots"),
-  # First screen
-  tabsetPanel(#2
-    tabPanel("Two-way Manhatan", #3
-             titlePanel("Two-way Manhatan"),
+  titlePanel("Two-ways Manhattan"),
+    tabsetPanel(#1
+    tabPanel("Introduction", #3
+             titlePanel("Read me"),
+             mainPanel(
+              h5("This Shiny app allows the users to dynamic interpret multiple phenotype GWAS using two type of interactive graphics"),
+              hr(),
+              h4("Two-way Manhattan"),
+              tags$p("The two-way Manhattan plot is helpful in visualizing GWAS results where there are two factors of interest, for example, different traits and management."),
+              tags$p("The interactive plots allow the user to identify candidate SNPs that may be associated with several phenotypes as any other important information from the GWAS analysis (p.value, chromosome, and genomic position)"),
+              imageOutput("myImage"),
+              h4("PheWAS plot"),
+              tags$p("Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can help to visualize the associations between SNPs and phenotypes and identify SNPs associated with several phenotypes."),
+              imageOutput("myImage2"),
+              hr(),
+              h4("Guidelines"),
+              tags$li("The user input can be a file separed by comma, semicolon or tab"),
+              tags$li("The user must identify the referring column of the Marker_ID, Marker position, p.value, chromosome, factor 1 and 2."),
+              tags$li("It is also possible to define the threshold, ylim, point size, Y and X axis labs"),
+              tags$li("For PheWAS plot, the user can also define the number of columns in the plots (Ncols)"),
+              tags$li("It is available for download examples files for two-ways Manhattan and PheWAS plot"),
+              h4("How to cite ShinyAIM"),
+              tags$li("Insert reference here"),
+              h4("Contact Information and suport:"),
+              tags$li("Rafael Massahiro Yassue, rafael.yassue@gmail.com"),
+              tags$li("Dr. Gota Morota, morota@vt.edu")
+              
+             )
+             
+    ),
+    
+    # 1 
+    tabPanel("Two-way Manhattan", #3
+             titlePanel("Two-way Manhattan"),
              sidebarLayout(  
                sidebarPanel( 
                  fileInput('file1', 'Choose CSV File',
@@ -30,16 +60,12 @@ ui <-shinyUI(fluidPage(# 1
                  selectInput('posi', 'Posi', ""),
                  selectInput('pvalue', 'P value', "", selected = ""),
                  selectInput('chromosome', 'Chromosome', "", selected = ""),
-                 checkboxInput('highlight', 'Highlight', TRUE),
+                 checkboxInput('highlight', 'Threshold', TRUE),
                  selectInput('trait1', 'Trait 1', "", selected = ""),
                  selectInput('trait2', 'Trait 2', "", selected = ""),
                  numericInput("obs", "Threshold:", 1),
                  numericInput("ylim", "ylim:", 1),
                  numericInput("point1", "Point size:", 0.1),
-                 sliderInput("aspect.ratio1", ("aspect.ratio"),
-                             min = 0.1, max = 2, value = .5),
-                 sliderInput("scale1", ("Scale"),
-                             min = 0.5, max = 3, value = 1),
                  textInput("xlab","Xlab"," "),
                  textInput("ylab","Ylab","p value"),
                  downloadButton("downloadData", "Download example data")
@@ -61,15 +87,11 @@ ui <-shinyUI(fluidPage(# 1
                  selectInput('marker_ID2', 'Marker_ID', ""),
                  selectInput('pheno_cor', 'Type', ""),
                  selectInput('pheno_name', 'Pheno', ""),
-                 selectInput('pvalue2', 'P valxue', "", selected = ""),
-                 checkboxInput('highlight2', 'Highlight', TRUE),
+                 selectInput('pvalue2', 'P value', "", selected = ""),
+                 checkboxInput('highlight2', 'Threshold', TRUE),
                  numericInput("obs2", "Threshold:", 1),
                  numericInput("ylim2", "ylim:", 1),
                  numericInput("point2", "Point size:", 0.1),
-                 sliderInput("aspect.ratio2", ("aspect.ratio"),
-                             min = 0.1, max = 2, value = .5),
-                 sliderInput("scale2", ("Scale"),
-                             min = 0.5, max = 3, value = 1),
                  numericInput("ncols", ("Ncols"),5),
                  textInput("xlab2","Xlab"," "),
                  textInput("ylab2","Ylab","p value"),
@@ -85,6 +107,21 @@ ui <-shinyUI(fluidPage(# 1
 
 
 server <- shinyServer(function(input, output, session) {
+  output$myImage <- renderImage({
+    list(src = "fig01.png",
+         contentType = 'image/png',
+         width = 400*1.3,
+         height = 300*1.3,
+         alt = "fig01")
+  }, deleteFile = F)
+  
+  output$myImage2 <- renderImage({
+    list(src = "fig02.png",
+         contentType = 'image/png',
+         width = 400*1.3,
+         height = 300*1.3,
+         alt = "fig02")
+  }, deleteFile = F)
   data <- reactive({ 
     req(input$file1) 
     inFile <- input$file1 
@@ -97,9 +134,9 @@ server <- shinyServer(function(input, output, session) {
                       choices = names(df), selected = names(df)[3])
     updateSelectInput(session, inputId = 'chromosome', label = 'Chromosome',
                       choices = names(df), selected = names(df)[5])
-    updateSelectInput(session, inputId = 'trait1', label = 'Trait 1',
+    updateSelectInput(session, inputId = 'trait1', label = 'Factor 1',
                       choices = names(df), selected = names(df)[1])
-    updateSelectInput(session, inputId = 'trait2', label = 'Trait 2',
+    updateSelectInput(session, inputId = 'trait2', label = 'Factor 2',
                       choices = names(df), selected = names(df)[4])
     updateSelectInput(session, inputId = 'marker_ID', label = 'Marker_ID',
                       choices = names(df), selected = names(df)[2])
@@ -134,7 +171,7 @@ server <- shinyServer(function(input, output, session) {
     
     for (i in 2:length(Chromosome)){
       dados$Index[dados$Chromosome==Chromosome[i]]<-dados$Index[dados$Chromosome==Chromosome[i]]+chromossos_size[i-1]
-        }
+    }
     data_1 <- reactiveValues()
     a <-ggplot(dados, aes(x = Index,colour = Chromosome, label = Marker_ID, y=pvalue)) +
       geom_point(size = input$point1)+facet_grid(as.formula(paste("trait1~ trait2")))+
@@ -153,8 +190,8 @@ server <- shinyServer(function(input, output, session) {
   })
   
   output$downloadData <- downloadHandler(
-    filename = function() {paste("example_manhatan.csv")},
-    content = function(file) {write.csv(read.csv("teste_Manhatan.csv"), file, row.names = FALSE)})
+    filename = function() {paste("example_manhattan.csv")},
+    content = function(file) {write.csv(read.csv("Manhatan_full.csv"), file, row.names = FALSE)})
   
   # Tab 2
   output$PheWAS_plot <- renderPlotly({
@@ -167,20 +204,20 @@ server <- shinyServer(function(input, output, session) {
     
     temp_graph<- ggplot(dados2, aes(x = Index, y=pvalue, colour = Type, label = Phenotype)) +
       geom_point(size = input$point2)+ theme_bw() +facet_wrap(~marker_ID2, ncol =  as.integer(input$ncols))+
-      ylab(input$ylab2)+ xlab(input$xlab2)+
+      ylab(input$ylab2)+ xlab(input$xlab2)+ ylim(-0.25,input$ylim2)+
       scale_x_continuous(breaks=breaks,labels=unique(dados2$Type)) 
     
-    if(input$highlight2){ data_2$plot <- temp_graph + geom_hline(yintercept = input$obs2, color="red",alpha = 0.75, size = 0.5, linetype = 2) 
+    if(input$highlight2){ temp_graph <- temp_graph + geom_hline(yintercept = input$obs2, color="red",alpha = 0.75, size = 0.5, linetype = 2) 
     data_2$plot <- ((temp_graph))
     }
     else{data_2$plot <- (temp_graph)}
     
-   ggplotly(data_2$plot)
+    ggplotly(data_2$plot)
   })
   
   output$downloadData2 <- downloadHandler(
     filename = function() {paste("PheWAS_test.csv")},
-    content = function(file) {write.csv(read.csv("PheWAS_test.csv"), file, row.names = FALSE)})
+    content = function(file) {write.csv(read.csv("PheWAS.csv"), file, row.names = FALSE)})
   
 })
 
