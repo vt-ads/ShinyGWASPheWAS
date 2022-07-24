@@ -9,7 +9,7 @@ library(reshape2)
 library(ggrepel)
 library(periscope)
 library(shinybusy)
-#setwd("~/Insync/rafael.yassue@usp.br/Google Drive/Ubuntu_RY/PHEGWAS/shiny")
+#setwd("~/Insync/rafael.yassue@usp.br/Google Drive/Ubuntu_RY/PHEGWAS/shiny_manhattan_plot/")
 options(shiny.maxRequestSize=100*1024^2) 
 #setwd(gsub("shiny.R", "",rstudioapi::getActiveDocumentContext()$path))
 # Changes the name of the 
