@@ -17,7 +17,7 @@ Interpreting GWAS analysis from hundreds to thousands of different phenotypes ca
 - For PheWAS plot, the user can also define the number of columns in the plots (Ncols)
 - It is available for download examples files for two-ways Manhattan and PheWAS plot
               
-## How to cite ShinyAIM
+## How to cite ShinyGWASPheWAS
 Insert reference here
 ## Contact Information and suport
 - Rafael Massahiro Yassue, <rafael.yassue@gmail.com>

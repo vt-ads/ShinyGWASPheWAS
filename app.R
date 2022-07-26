@@ -9,12 +9,16 @@ library(reshape2)
 library(ggrepel)
 library(periscope)
 library(shinybusy)
-#setwd("~/Insync/rafael.yassue@usp.br/Google Drive/Ubuntu_RY/PHEGWAS/shiny_manhattan_plot/")
+#setwd("~/Insync/rafael.yassue@usp.br/Google Drive/Ubuntu_RY/PHEGWAS/ShinyGWASPheWAS")
 options(shiny.maxRequestSize=100*1024^2) 
 #setwd(gsub("shiny.R", "",rstudioapi::getActiveDocumentContext()$path))
-# Changes the name of the 
+# Explain the dataset
+# add more information
+# Explain which dataset 
+
+
 ui <-shinyUI(fluidPage(# 1
-  titlePanel("Two-ways Manhattan"),
+  titlePanel("ShinyGWASPheWAS"),
     tabsetPanel(#1
     tabPanel("Introduction", #3
              titlePanel("Read me"),
@@ -25,16 +29,22 @@ ui <-shinyUI(fluidPage(# 1
               tags$p("The two-way Manhattan plot is helpful in visualizing GWAS results where there are two factors of interest, for example, different traits and management."),
               tags$p("The interactive plots allow the user to identify candidate SNPs that may be associated with several phenotypes as any other important information from the GWAS analysis (p.value, chromosome, and genomic position)"),
               imageOutput("myImage"),
+              h5("Guidelines"),
+              tags$li("The user input can be a file separed by comma, semicolon, or tab and specify quote "),
+              tags$li("In the left corner of the page is available for download examples file."),
+              tags$li("The example file cointain GWAS analysis of 13,826 single nucleotide polymorphisms (SNPs) for three traits (SDM, SD, PH) under two managaments (B+ and B-)"),
+              tags$li("The user must identify the referring column of the Marker_ID, Marker position, p.value, chromosome, factor 1 and 2 in the input that will be used for plot"),
+              tags$li("It is also possible to define the threshold, ylim, point size, Y and X axis labs"),
               h4("PheWAS plot"),
               tags$p("Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can help to visualize the associations between SNPs and phenotypes and identify SNPs associated with several phenotypes."),
               imageOutput("myImage2"),
               hr(),
-              h4("Guidelines"),
-              tags$li("The user input can be a file separed by comma, semicolon or tab"),
-              tags$li("The user must identify the referring column of the Marker_ID, Marker position, p.value, chromosome, factor 1 and 2."),
-              tags$li("It is also possible to define the threshold, ylim, point size, Y and X axis labs"),
-              tags$li("For PheWAS plot, the user can also define the number of columns in the plots (Ncols)"),
-              tags$li("It is available for download examples files for two-ways Manhattan and PheWAS plot"),
+              h5("Guidelines"),
+              tags$li("The user input can be a file separed by comma, semicolon, or tab and specify quote "),
+              tags$li("In the left corner of the page is available for download examples file."),
+              tags$li("The example file contain the summary of GWAS analysis for 281 hyperspectral phenotypes and three manually measured. The phenotype_ID is the name of the phenotype and group is the class, if is reflectance, index, or  manually measured phenotype"),
+              tags$li("The user must identify the referring column of the Marker_ID, phenotype group, phenotype ID (trait), and p.value."),
+              tags$li("It is also possible to define the threshold, ylim, point size, number of columns in the plots (Ncols), and Y and X axis labs"),
               h4("How to cite ShinyAIM"),
               tags$li("Insert reference here"),
               h4("Contact Information and suport:"),
@@ -61,8 +71,8 @@ ui <-shinyUI(fluidPage(# 1
                  selectInput('pvalue', 'P value', "", selected = ""),
                  selectInput('chromosome', 'Chromosome', "", selected = ""),
                  checkboxInput('highlight', 'Threshold', TRUE),
-                 selectInput('trait1', 'Trait 1', "", selected = ""),
-                 selectInput('trait2', 'Trait 2', "", selected = ""),
+                 selectInput('trait1', 'Factor 1', "", selected = ""),
+                 selectInput('trait2', 'Factor 2', "", selected = ""),
                  numericInput("obs", "Threshold:", 1),
                  numericInput("ylim", "ylim:", 1),
                  numericInput("point1", "Point size:", 0.1),
@@ -216,7 +226,7 @@ server <- shinyServer(function(input, output, session) {
   })
   
   output$downloadData2 <- downloadHandler(
-    filename = function() {paste("PheWAS_test.csv")},
+    filename = function() {paste("PheWAS.csv")},
     content = function(file) {write.csv(read.csv("PheWAS.csv"), file, row.names = FALSE)})
   
 })
