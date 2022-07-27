@@ -23,29 +23,33 @@ ui <-shinyUI(fluidPage(# 1
     tabPanel("Introduction", #3
              titlePanel("Read me"),
              mainPanel(
-              h5("This Shiny app allows the users to dynamic interpret multiple phenotype GWAS using two type of interactive graphics"),
+              h5("This Shiny app allows the users to dynamic interpret multiple phenotype GWAS results using two types of interactive graphics"),
               hr(),
               h4("Two-way Manhattan"),
               tags$p("The two-way Manhattan plot is helpful in visualizing GWAS results where there are two factors of interest, for example, different traits and management."),
               tags$p("The interactive plots allow the user to identify candidate SNPs that may be associated with several phenotypes as any other important information from the GWAS analysis (p.value, chromosome, and genomic position)"),
               imageOutput("myImage"),
               h5("Guidelines"),
-              tags$li("The user input can be a file separed by comma, semicolon, or tab and specify quote "),
-              tags$li("In the left corner of the page is available for download examples file."),
-              tags$li("The example file cointain GWAS analysis of 13,826 single nucleotide polymorphisms (SNPs) for three traits (SDM, SD, PH) under two managaments (B+ and B-)"),
-              tags$li("The user must identify the referring column of the Marker_ID, Marker position, p.value, chromosome, factor 1 and 2 in the input that will be used for plot"),
+              tags$li("The user must run the GWAS analysis externally using any software, such as GAPIT,rrBLUP, JWAS, etc..."),
+              tags$li("The user input can be a file separated by a comma, semicolon, or tab and specify quote"),
+              tags$li("In the left corner of the page is available for download an example file"),
+              tags$li("The example file cointain GWAS analysis of 13,826 single nucleotide polymorphisms (SNPs) for three traits (SDM, SD, PH) under two managements (B+ and B-)"),
+              tags$li("The user input must follow a similar structure from the example file. The oders of the columns may be different"),
+              tags$li("The user must identify the referring column of the Marker_ID, Marker position, p.value, chromosome, factor 1 and 2 in the input that will be used for the plot"),
               tags$li("It is also possible to define the threshold, ylim, point size, Y and X axis labs"),
               h4("PheWAS plot"),
               tags$p("Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can help to visualize the associations between SNPs and phenotypes and identify SNPs associated with several phenotypes."),
               imageOutput("myImage2"),
               hr(),
               h5("Guidelines"),
-              tags$li("The user input can be a file separed by comma, semicolon, or tab and specify quote "),
+              tags$li("The user must run the GWAS analysis externally using any software, such as GAPIT,rrBLUP, JWAS, etc..."),
+              tags$li("The user input can be a file separated by a comma, semicolon, or tab and specify quote"),
               tags$li("In the left corner of the page is available for download examples file."),
-              tags$li("The example file contain the summary of GWAS analysis for 281 hyperspectral phenotypes and three manually measured. The phenotype_ID is the name of the phenotype and group is the class, if is reflectance, index, or  manually measured phenotype"),
-              tags$li("The user must identify the referring column of the Marker_ID, phenotype group, phenotype ID (trait), and p.value."),
+              tags$li("The example file contains the summary of GWAS analysis for 281 hyperspectral phenotypes and three manually measured for 10 SNPs. The phenotype_ID is the name of the phenotype and group is the class, if it is a reflectance, index, or  manually measured phenotype"),
+              tags$li("The user input must follow a similar structure from the example file. The oders of the columns may be different"),
+              tags$li("The user must identify the referring column of the Marker_ID, phenotype group, phenotype ID (trait), and p.value"),
               tags$li("It is also possible to define the threshold, ylim, point size, number of columns in the plots (Ncols), and Y and X axis labs"),
-              h4("How to cite ShinyAIM"),
+              h4("How to cite ShinyGWASPheWAS"),
               tags$li("Insert reference here"),
               h4("Contact Information and suport:"),
               tags$li("Rafael Massahiro Yassue, rafael.yassue@gmail.com"),
@@ -56,8 +60,8 @@ ui <-shinyUI(fluidPage(# 1
     ),
     
     # 1 
-    tabPanel("Two-way Manhattan", #3
-             titlePanel("Two-way Manhattan"),
+    tabPanel("Two-way Manhattan plot", #3
+             titlePanel("Two-way Manhattan plot"),
              sidebarLayout(  
                sidebarPanel( 
                  fileInput('file1', 'Choose CSV File',
@@ -226,7 +230,7 @@ server <- shinyServer(function(input, output, session) {
   })
   
   output$downloadData2 <- downloadHandler(
-    filename = function() {paste("PheWAS.csv")},
+    filename = function() {paste("example_PheWAS.csv")},
     content = function(file) {write.csv(read.csv("PheWAS.csv"), file, row.names = FALSE)})
   
 })
