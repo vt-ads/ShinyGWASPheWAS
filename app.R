@@ -12,49 +12,42 @@ library(shinybusy)
 #setwd("~/Insync/rafael.yassue@usp.br/Google Drive/Ubuntu_RY/PHEGWAS/ShinyGWASPheWAS")
 options(shiny.maxRequestSize=100*1024^2) 
 #setwd(gsub("shiny.R", "",rstudioapi::getActiveDocumentContext()$path))
-# Explain the dataset
-# add more information
-# Explain which dataset 
-
 
 ui <-shinyUI(fluidPage(# 1
   titlePanel("ShinyGWASPheWAS"),
     tabsetPanel(#1
     tabPanel("Introduction", #3
-             titlePanel("Read me"),
              mainPanel(
-              h5("This Shiny app allows the users to dynamic interpret multiple phenotype GWAS results using two types of interactive graphics"),
+              hr(),
+              tags$p("This Shiny app allows the users to interpret multiple phenotype GWAS results interactively using Two-way Manhattan and PheWAS plots."),
               hr(),
               h4("Two-way Manhattan"),
-              tags$p("The two-way Manhattan plot is helpful in visualizing GWAS results where there are two factors of interest, for example, different traits and management."),
-              tags$p("The interactive plots allow the user to identify candidate SNPs that may be associated with several phenotypes as any other important information from the GWAS analysis (p.value, chromosome, and genomic position)"),
+              tags$p("The two-way Manhattan plot helps visualize GWAS results, where there are two factors of interest. For example, different traits and management conditions."),
+              tags$p("The interactive plots allow the user to identify candidate single nucleotide polymorphisms (SNPs) associated with several phenotypes along with additional information, such as p-value, chromosome, and genomic position."),
               imageOutput("myImage"),
-              h5("Guidelines"),
+              h5("Usage"),
               tags$li("The user must run the GWAS analysis externally using any software, such as GAPIT,rrBLUP, JWAS, etc..."),
               tags$li("The user input can be a file separated by a comma, semicolon, or tab and specify quote"),
-              tags$li("In the left corner of the page is available for download an example file"),
-              tags$li("The example file cointain GWAS analysis of 13,826 single nucleotide polymorphisms (SNPs) for three traits (SDM, SD, PH) under two managements (B+ and B-)"),
-              tags$li("The user input must follow a similar structure from the example file. The names and oders of the columns may be different"),
-              tags$li("The user must identify the referring column of the Marker_ID, Marker position, p.value, chromosome, factor 1 and 2 in the input that will be used for the plot"),
-              tags$li("It is also possible to define the threshold, ylim, point size, Y and X axis labs"),
+              tags$li("The dataset is downloadable from the bottom of the app"),
+              tags$li("The dataset contains GWAS analysis of 13,826 SNPs for plant height (PH), stalk diameter (SD), and shoot dry mass (SDM) under two management conditions (B+ and B-)"),
+              tags$li("The user must identify the columns for Marker_ID, Marker position, posterior inclusion probability (PIP) or p value, chromosome, and factors 1 and 2 in the input that will be used for the plotting"),
+              tags$li("Changing the threshold, ylim, point size, and Y and X axes is possible"),
+              tags$li("Only a subset of 85% of the markers lower than < 0.05 are plotted in order to save computing resources"),
               h4("PheWAS plot"),
-              tags$p("Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can help to visualize the associations between SNPs and phenotypes and identify SNPs associated with several phenotypes."),
+              tags$p("Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can efficiently help visualize the associations between SNPs and phenotypes."),
               imageOutput("myImage2"),
               hr(),
-              h5("Guidelines"),
+              h5("Usage"),
               tags$li("The user must run the GWAS analysis externally using any software, such as GAPIT,rrBLUP, JWAS, etc..."),
               tags$li("The user input can be a file separated by a comma, semicolon, or tab and specify quote"),
-              tags$li("In the left corner of the page is available for download examples file."),
-              tags$li("The example file contains the summary of GWAS analysis for 281 hyperspectral phenotypes and three manually measured for 10 SNPs. The phenotype_ID is the name of the phenotype and group is the class, if it is a reflectance, index, or  manually measured phenotype"),
-              tags$li("The user input must follow a similar structure from the example file. The names and oders columns may be different"),
-              tags$li("The user must identify the referring column of the Marker_ID, phenotype group, phenotype ID (trait), and p.value"),
-              tags$li("It is also possible to define the threshold, ylim, point size, number of columns in the plots (Ncols), and Y and X axis labs"),
+              tags$li("The dataset is downloadable from the bottom of the app"),
+              tags$li("The dataset contains the summary of GWAS analysis for 281 hyperspectral phenotypes and three manually measured phenotypes (PH, SD, and SDM) for 10 SNPs"),
+              tags$li("The user must identify the columns for Marker_ID, phenotype group, phenotype ID (trait), and PIP or p value in the input that will be used for the plotting"),
+              tags$li("Changing the threshold, ylim, point size, number of columns, and Y and X axes is possible"),
               h4("How to cite ShinyGWASPheWAS"),
               tags$li("Insert reference here"),
-              h4("Contact Information and suport:"),
-              tags$li("Rafael Massahiro Yassue, rafael.yassue@gmail.com"),
-              tags$li("Dr. Gota Morota, morota@vt.edu")
-              
+              h4("Contact Information and support:"),
+              tags$li("Rafael Massahiro Yassue, rafael.yassue@gmail.com")
              )
              
     ),
@@ -72,7 +65,7 @@ ui <-shinyUI(fluidPage(# 1
                  radioButtons('quote', 'Quote',c(None='','Double Quote'='"','Single Quote'="'"), '"'),
                  selectInput('marker_ID', 'Marker_ID', ""),
                  selectInput('posi', 'Posi', ""),
-                 selectInput('pvalue', 'P value', "", selected = ""),
+                 selectInput('pvalue', 'PIP', "", selected = ""),
                  selectInput('chromosome', 'Chromosome', "", selected = ""),
                  checkboxInput('highlight', 'Threshold', TRUE),
                  selectInput('trait1', 'Factor 1', "", selected = ""),
@@ -81,8 +74,8 @@ ui <-shinyUI(fluidPage(# 1
                  numericInput("ylim", "ylim:", 1),
                  numericInput("point1", "Point size:", 0.1),
                  textInput("xlab","Xlab"," "),
-                 textInput("ylab","Ylab","p value"),
-                 downloadButton("downloadData", "Download example data")
+                 textInput("ylab","Ylab","PIP"),
+                 downloadButton("downloadData", "Download two-way Manhattan data")
                  
                ),
                mainPanel(plotlyOutput('MyPlot'), add_busy_spinner(spin = "fading-circle"))
@@ -101,15 +94,15 @@ ui <-shinyUI(fluidPage(# 1
                  selectInput('marker_ID2', 'Marker_ID', ""),
                  selectInput('pheno_cor', 'Type', ""),
                  selectInput('pheno_name', 'Pheno', ""),
-                 selectInput('pvalue2', 'P value', "", selected = ""),
+                 selectInput('pvalue2', 'PIP', "", selected = ""),
                  checkboxInput('highlight2', 'Threshold', TRUE),
                  numericInput("obs2", "Threshold:", 1),
                  numericInput("ylim2", "ylim:", 1),
                  numericInput("point2", "Point size:", 0.1),
-                 numericInput("ncols", ("Ncols"),5),
+                 numericInput("ncols", ("Ncols"),2),
                  textInput("xlab2","Xlab"," "),
-                 textInput("ylab2","Ylab","p value"),
-                 downloadButton("downloadData2", "Download example Phewas data")
+                 textInput("ylab2","Ylab","PIP"),
+                 downloadButton("downloadData2", "Download PheWAS data")
                  
                ),
                mainPanel(plotlyOutput('PheWAS_plot'), add_busy_spinner(spin = "fading-circle"))
@@ -173,6 +166,7 @@ server <- shinyServer(function(input, output, session) {
   output$MyPlot <- renderPlotly({
     dados <- data()[, c(input$posi, input$pvalue, input$chromosome,input$trait1, input$trait2, input$marker_ID)]
     colnames(dados)<-c("Index", "pvalue", "Chromosome", "trait1", "trait2", "Marker_ID")
+    dados = dados[-sample(which(dados$pvalue < 0.05), size = length(which(dados$pvalue < 0.05))*0.85),]
     Chromosome<-unique(dados$Chromosome)
     chromossos_size=c()
     for (i in 1:length(Chromosome)){chromossos_size[i]=max(dados$Index[dados$Chromosome==Chromosome[i]])}
@@ -218,7 +212,7 @@ server <- shinyServer(function(input, output, session) {
     
     temp_graph<- ggplot(dados2, aes(x = Index, y=pvalue, colour = Type, label = Phenotype)) +
       geom_point(size = input$point2)+ theme_bw() +facet_wrap(~marker_ID2, ncol =  as.integer(input$ncols))+
-      ylab(input$ylab2)+ xlab(input$xlab2)+ ylim(-0.25,input$ylim2)+
+      ylab(input$ylab2)+ xlab(input$xlab2)+ ylim(-0.40,input$ylim2)+
       scale_x_continuous(breaks=breaks,labels=unique(dados2$Type)) 
     
     if(input$highlight2){ temp_graph <- temp_graph + geom_hline(yintercept = input$obs2, color="red",alpha = 0.75, size = 0.5, linetype = 2) 

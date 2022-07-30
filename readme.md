@@ -1,36 +1,34 @@
 # Shiny app for multiple phenotypes Manhattan plots
-This Shiny app allows the users to dynamic interpret multiple phenotype GWAS results using two types of interactive graphics
+This Shiny app allows the users to interpret multiple phenotype GWAS results interactively using Two-way Manhattan and PheWAS plots.
 
 ## Two-way Manhattan
-The two-way Manhattan plot is helpful in visualizing GWAS results where there are two factors of interest, for example, different traits and management.
-The interactive plots allow the user to identify candidate SNPs that may be associated with several phenotypes as any other important information from the GWAS analysis (p.value, chromosome, and genomic position)
+The two-way Manhattan plot helps visualize GWAS results, where there are two factors of interest. For example, different traits and management conditions.
+The interactive plots allow the user to identify candidate single nucleotide polymorphisms (SNPs) associated with several phenotypes along with additional information, such as p-value, chromosome, and genomic position.
 ![plot1](fig01.png)
 
-### Guidelines
+### Usage
 - The user must run the GWAS analysis externally using any software, such as GAPIT,rrBLUP, JWAS, etc...
 - The user input can be a file separated by a comma, semicolon, or tab and specify quote
-- In the left corner of the page is available for download an example file
-- The example file cointain GWAS analysis of 13,826 single nucleotide polymorphisms (SNPs) for three traits (SDM, SD, PH) under two managements (B+ and B-)
-- The user input must follow a similar structure from the example file. The names and oders columns may be differen
-- The user must identify the referring column of the Marker_ID, Marker position, p.value, chromosome, factor 1 and 2 in the input that will be used for the plot
-- It is also possible to define the threshold, ylim, point size, Y and X axis labs
+- The dataset is downloadable from the bottom of the app
+- The dataset contains GWAS analysis of 13,826 SNPs for plant height (PH), stalk diameter (SD), and shoot dry mass (SDM) under two management conditions (B+ and B-)
+- The user must identify the columns for Marker_ID, Marker position, posterior inclusion probability (PIP) or p value, chromosome, and factors 1 and 2 in the input that will be used for the plotting
+- Changing the threshold, ylim, point size, and Y and X axes is possible
+- Only a subset of 85% of the markers lower than < 0.05 are plotted in order to save computing resources
 
 ## PheWAS plot
-Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can help to visualize the associations between SNPs and phenotypes and identify SNPs associated with several phenotypes
+Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can efficiently help visualize the associations between SNPs and phenotypes.
 ![plot2](fig02.png)
-### Guidelines
+
+### Usage
 - The user must run the GWAS analysis externally using any software, such as GAPIT,rrBLUP, JWAS, etc...
 - The user input can be a file separated by a comma, semicolon, or tab and specify quote
-- In the left corner of the page is available for download examples file.
-- The example file contains the summary of GWAS analysis for 281 hyperspectral phenotypes and three manually measured for 10 SNPs. The phenotype_ID is the name of the phenotype and group is the class, if it is a reflectance, index, or manually measured phenotype
-- The user input must follow a similar structure from the example file. The names and oders columns may be different
-- The user must identify the referring column of the Marker_ID, phenotype group, phenotype ID (trait), and p.value
-- It is also possible to define the threshold, ylim, point size, number of columns in the plots (Ncols), and Y and X axis labs
-
+- The dataset is downloadable from the bottom of the app
+- The dataset contains the summary of GWAS analysis for 281 hyperspectral phenotypes and three manually measured phenotypes (PH, SD, and SDM) for 10 SNPs
+- The user must identify the columns for Marker_ID, phenotype group, phenotype ID (trait), and PIP or p value in the input that will be used for the plotting
+- Changing the threshold, ylim, point size, number of columns, and Y and X axes is possible
               
 ## How to cite ShinyGWASPheWAS
 Insert reference here
-## Contact Information and suport
+
+## Contact Information and support:
 - Rafael Massahiro Yassue, <rafael.yassue@gmail.com>
-- Dr. Gota Morota, <morota@vt.edu>
-              
