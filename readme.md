@@ -13,7 +13,7 @@ The interactive plots allow the user to identify candidate single nucleotide pol
 - The dataset contains GWAS analysis of 13,826 SNPs for plant height (PH), stalk diameter (SD), and shoot dry mass (SDM) under two management conditions (B+ and B-)
 - The user must identify the columns for Marker_ID, Marker position, posterior inclusion probability (PIP) or p value, chromosome, and factors 1 and 2 in the input that will be used for the plotting
 - Changing the threshold, ylim, point size, and Y and X axes is possible
-- Only a subset of 85% of the markers lower than < 0.05 are plotted in order to save computing resources
+- Only a subset of 85% of the markers with PIP or p.value < 0.05 are plotted in order to save computing resources
 
 ## PheWAS plot
 Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can efficiently help visualize the associations between SNPs and phenotypes.
