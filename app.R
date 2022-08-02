@@ -32,7 +32,7 @@ ui <-shinyUI(fluidPage(# 1
               tags$li("The dataset contains GWAS analysis of 13,826 SNPs for plant height (PH), stalk diameter (SD), and shoot dry mass (SDM) under two management conditions (B+ and B-)"),
               tags$li("The user must identify the columns for Marker_ID, Marker position, posterior inclusion probability (PIP) or p value, chromosome, and factors 1 and 2 in the input that will be used for the plotting"),
               tags$li("Changing the threshold, ylim, point size, and Y and X axes is possible"),
-              tags$li("Only a subset of 85% of the markers with PIP or p.value < 0.05 are plotted in order to save computing resources"),
+              tags$li("Only a subset (85%) of the markers with PIP or p value < 0.05 are plotted to save computing time"),
               h4("PheWAS plot"),
               tags$p("Interpreting GWAS analysis from hundreds to thousands of different phenotypes can be challenging. In this sense, PheWAS plots can efficiently help visualize the associations between SNPs and phenotypes."),
               imageOutput("myImage2"),
@@ -64,7 +64,7 @@ ui <-shinyUI(fluidPage(# 1
                  radioButtons('sep', 'Separator',c(Comma=',',Semicolon=';',Tab='\t'),','),
                  radioButtons('quote', 'Quote',c(None='','Double Quote'='"','Single Quote'="'"), '"'),
                  selectInput('marker_ID', 'Marker_ID', ""),
-                 selectInput('posi', 'Posi', ""),
+                 selectInput('posi', 'Position', ""),
                  selectInput('pvalue', 'PIP', "", selected = ""),
                  selectInput('chromosome', 'Chromosome', "", selected = ""),
                  checkboxInput('highlight', 'Threshold', TRUE),
@@ -72,7 +72,7 @@ ui <-shinyUI(fluidPage(# 1
                  selectInput('trait2', 'Factor 2', "", selected = ""),
                  numericInput("obs", "Threshold:", 1),
                  numericInput("ylim", "ylim:", 1),
-                 numericInput("point1", "Point size:", 0.1),
+                 numericInput("point1", "Point size:", 0.25),
                  textInput("xlab","Xlab"," "),
                  textInput("ylab","Ylab","PIP"),
                  downloadButton("downloadData", "Download two-way Manhattan data")
@@ -98,7 +98,7 @@ ui <-shinyUI(fluidPage(# 1
                  checkboxInput('highlight2', 'Threshold', TRUE),
                  numericInput("obs2", "Threshold:", 1),
                  numericInput("ylim2", "ylim:", 1),
-                 numericInput("point2", "Point size:", 0.1),
+                 numericInput("point2", "Point size:", 0.25),
                  numericInput("ncols", ("Ncols"),2),
                  textInput("xlab2","Xlab"," "),
                  textInput("ylab2","Ylab","PIP"),
@@ -117,16 +117,16 @@ server <- shinyServer(function(input, output, session) {
   output$myImage <- renderImage({
     list(src = "fig01.png",
          contentType = 'image/png',
-         width = 400*1.3,
-         height = 300*1.3,
+         width = 1800/4,
+         height = 1600/4,
          alt = "fig01")
   }, deleteFile = F)
   
   output$myImage2 <- renderImage({
     list(src = "fig02.png",
          contentType = 'image/png',
-         width = 400*1.3,
-         height = 300*1.3,
+         width = 1800/4,
+         height = 1600/4,
          alt = "fig02")
   }, deleteFile = F)
   data <- reactive({ 
@@ -135,9 +135,9 @@ server <- shinyServer(function(input, output, session) {
     df <- read.csv(inFile$datapath, header = input$header, sep = input$sep,
                    quote = input$quote)
     
-    updateSelectInput(session, inputId = 'posi', label = 'Marker position',
+    updateSelectInput(session, inputId = 'posi', label = 'Position',
                       choices = names(df), selected = names(df)[6])
-    updateSelectInput(session, inputId = 'pvalue', label = 'p value',
+    updateSelectInput(session, inputId = 'pvalue', label = 'PIP',
                       choices = names(df), selected = names(df)[3])
     updateSelectInput(session, inputId = 'chromosome', label = 'Chromosome',
                       choices = names(df), selected = names(df)[5])
@@ -157,7 +157,7 @@ server <- shinyServer(function(input, output, session) {
                       choices = names(df2), selected = names(df2)[7])
     updateSelectInput(session, inputId = 'pheno_name', label = 'Phenotype ID',
                       choices = names(df2), selected = names(df2)[1])
-    updateSelectInput(session, inputId = 'pvalue2', label = 'p value',
+    updateSelectInput(session, inputId = 'pvalue2', label = 'PIP',
                       choices = names(df2), selected = names(df2)[3])
     updateSelectInput(session, inputId = 'marker_ID2', label = 'Marker_ID',
                       choices = names(df2), selected = names(df2)[2])
