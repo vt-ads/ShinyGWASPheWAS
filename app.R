@@ -9,9 +9,7 @@ library(reshape2)
 library(ggrepel)
 library(periscope)
 library(shinybusy)
-#setwd("~/Insync/rafael.yassue@usp.br/Google Drive/Ubuntu_RY/PHEGWAS/ShinyGWASPheWAS")
 options(shiny.maxRequestSize=100*1024^2) 
-#setwd(gsub("shiny.R", "",rstudioapi::getActiveDocumentContext()$path))
 
 ui <-shinyUI(fluidPage(# 1
   titlePanel("ShinyGWASPheWAS"),
