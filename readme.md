@@ -7,6 +7,8 @@ The interactive plots allow the user to identify candidate single nucleotide pol
 ![plot1](fig01.png)
 
 ### Usage
+- Download the code
+- In R, run shiny::runApp()
 - The user must run the GWAS analysis externally using any software, such as GAPIT,rrBLUP, JWAS, etc...
 - The user input can be a file separated by a comma, semicolon, or tab and specify quote
 - The dataset is downloadable from the bottom of the app
