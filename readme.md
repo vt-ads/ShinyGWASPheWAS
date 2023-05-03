@@ -32,7 +32,7 @@ Interpreting GWAS analysis from hundreds to thousands of different phenotypes ca
 - Changing the threshold, ylim, point size, number of columns, and Y and X axes is possible
               
 ## How to cite ShinyGWASPheWAS
-Insert reference here
+* Yassue RM, Galli G, Fritsche-Neto  R, Chen CJ, Morota G. “Genome-wide association analysis of hyperspectral reflectance data to dissect the genetic architecture of growth-related traits in maize under plant growth-promoting bacteria inoculation”. Plant Direct. 2023. [doi](https://doi.org/10.1002/pld3.492)
 
 ## Contact Information and support:
 - Rafael Massahiro Yassue, <rafael.yassue@gmail.com>
